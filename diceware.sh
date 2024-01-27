@@ -6,7 +6,6 @@ blnk=$(echo "$arg0" | sed 's/./ /g')
 usage_info()
 {
     echo "Usage: $arg0 [{-s|--size} size] [-e|--entropy] [-v|--verify]"
-    #echo "Usage: $arg0 [{-s|--size} size] [{-b|--bbb} bbb] \\"
     #echo "       $blnk [{-c|--ccc} ccc] [{-d|--ddd} ddd] \\"
 }
 
