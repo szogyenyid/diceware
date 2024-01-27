@@ -71,6 +71,12 @@ SIZE=6
 DELIMITER=" "
 flags "$@"
 
+if ! test -f $BASEDIR/eff_large_wordlist.txt; then
+    echo "Wordlist not found. Downloading..."
+    $(wget -P $BASEDIR https://www.eff.org/files/2016/07/18/eff_large_wordlist.txt)
+    VERIFY=1
+fi
+
 if [[ "$VERIFY" -eq "1" ]]; then
     echo "Verifying fingerprints..."
     EFFFINGERPRINT=$(wget -qO- https://www.eff.org/files/2016/07/18/eff_large_wordlist.txt | openssl dgst -sha256 | cut -d " " -f 2)
