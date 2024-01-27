@@ -66,6 +66,7 @@ flags()
     done
 }
 
+BASEDIR=$(dirname "$0")
 SIZE=6
 DELIMITER=" "
 flags "$@"
@@ -73,7 +74,7 @@ flags "$@"
 if [[ "$VERIFY" -eq "1" ]]; then
     echo "Verifying fingerprints..."
     EFFFINGERPRINT=$(wget -qO- https://www.eff.org/files/2016/07/18/eff_large_wordlist.txt | openssl dgst -sha256 | cut -d " " -f 2)
-    LISTFINGERPRINT=$(cat eff_large_wordlist.txt | openssl dgst -sha256 | cut -d " " -f 2)
+    LISTFINGERPRINT=$(cat $BASEDIR/eff_large_wordlist.txt | openssl dgst -sha256 | cut -d " " -f 2)
     if [[ "$LISTFINGERPRINT" != "$EFFFINGERPRINT" ]]; then
         echo "Your dictionary differs from the one provided by EFF. Aborting"
         exit 1
@@ -94,7 +95,7 @@ do
         CURRRAND=$(($((16#$(cat /dev/urandom | head -n 50 | od -x | cut -b 8-12,14-18 | xargs | sed 's/ //g' | cut -b 1-14)))%6 + 1))
         CURRNUM="${CURRNUM}${CURRRAND}"
     done
-    WORD=$(grep ${CURRNUM} eff_large_wordlist.txt | cut -f 2)
+    WORD=$(grep ${CURRNUM} $BASEDIR/eff_large_wordlist.txt | cut -f 2)
     if [ $i -eq $SIZE ]; then
         echo -ne "$WORD"
     else
