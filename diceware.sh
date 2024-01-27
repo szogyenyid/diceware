@@ -72,7 +72,7 @@ DELIMITER=" "
 flags "$@"
 
 if ! test -f $BASEDIR/eff_large_wordlist.txt; then
-    echo "Wordlist not found. Downloading..."
+    echo "Wordlist not found. Trying to download..."
     $(wget -P $BASEDIR https://www.eff.org/files/2016/07/18/eff_large_wordlist.txt)
     VERIFY=1
 fi
