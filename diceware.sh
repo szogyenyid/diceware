@@ -5,8 +5,18 @@ blnk=$(echo "$arg0" | sed 's/./ /g')
 
 usage_info()
 {
-    echo "Usage: $arg0 [{-a|--aaa} aaa] [{-b|--bbb} bbb] \\"
-    echo "       $blnk [{-c|--ccc} ccc] [{-d|--ddd} ddd] \\"
+    echo "Usage: $arg0 [{-s|--size} size]"
+    #echo "Usage: $arg0 [{-s|--size} size] [{-b|--bbb} bbb] \\"
+    #echo "       $blnk [{-c|--ccc} ccc] [{-d|--ddd} ddd] \\"
+}
+
+help()
+{
+    usage_info
+    echo
+    echo "  {-s|--size} size  -- The number of words in the passphrase (default: 6)"
+    echo "  {-h|--help}       -- Print this help message and exit"
+    exit 0
 }
 
 usage()
@@ -20,19 +30,6 @@ error()
 {
     echo "$arg0: $*" >&2
     exit 1
-}
-
-help()
-{
-    usage_info
-    echo
-    echo "  {-a|--aaa} aaa  -- What does it do? (default: ?)"
-    echo "  {-b|--bbb} bbb  -- What does it do?"
-    echo "  {-c|--ccc} ccc  -- What does it do?"
-    echo "  {-d|--ddd} ddd  -- What does it do?"
-    echo "  {-h|--help}     -- Print this help message and exit"
-#   echo "  {-V|--version}  -- Print version information and exit"
-    exit 0
 }
 
 flags()
