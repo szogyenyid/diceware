@@ -82,6 +82,10 @@ if [[ "$VERIFY" -eq "1" ]]; then
     echo
 fi
 
+if [[ "$SIZE" -lt 6 ]]; then
+    echo "Warning! It is advised to use at least 6 words for a passphrase."
+fi
+
 for i in $(seq 1 $SIZE);
 do
     CURRNUM=""
