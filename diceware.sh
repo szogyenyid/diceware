@@ -5,7 +5,7 @@ blnk=$(echo "$arg0" | sed 's/./ /g')
 
 usage_info()
 {
-    echo "Usage: $arg0 [{-s|--size} size]"
+    echo "Usage: $arg0 [{-s|--size} size] [-e|--entropy] [-v|--verify]"
     #echo "Usage: $arg0 [{-s|--size} size] [{-b|--bbb} bbb] \\"
     #echo "       $blnk [{-c|--ccc} ccc] [{-d|--ddd} ddd] \\"
 }
@@ -15,6 +15,8 @@ help()
     usage_info
     echo
     echo "  {-s|--size} size  -- The number of words in the passphrase (default: 6)"
+    echo "  {-e|--entropy}    -- Show the entropy of the generated passphrase"
+    echo "  {-v|--verify}     -- Verifies if the present wordlist is the one provided by EFF"
     echo "  {-h|--help}       -- Print this help message and exit"
     exit 0
 }
@@ -38,18 +40,22 @@ flags()
     while test $# -gt 0
     do
         case "$1" in
-        (-s|--size)
-            shift
-            [ $# = 0 ] && error "No size specified"
-            export SIZE="$1"
-            shift
-            OPTCOUNT=$(($OPTCOUNT + 2));;
         (-e|--entropy)
             shift
             export ENTROPY=1
             OPTCOUNT=$(($OPTCOUNT + 1));;
         (-h|--help)
             help;;
+        (-s|--size)
+            shift
+            [ $# = 0 ] && error "No size specified"
+            export SIZE="$1"
+            shift
+            OPTCOUNT=$(($OPTCOUNT + 2));;
+        (-v|--verify)
+            shift
+            export VERIFY=1
+            OPTCOUNT=$(($OPTCOUNT + 1));;
         (*) usage;;
         esac
     done
@@ -57,6 +63,18 @@ flags()
 
 SIZE=6
 flags "$@"
+
+if [[ "$VERIFY" -eq "1" ]]; then
+    echo "Verifying fingerprints..."
+    EFFFINGERPRINT=$(wget -qO- https://www.eff.org/files/2016/07/18/eff_large_wordlist.txt | openssl dgst -sha256 | cut -d " " -f 2)
+    LISTFINGERPRINT=$(cat eff_large_wordlist.txt | openssl dgst -sha256 | cut -d " " -f 2)
+    if [[ "$LISTFINGERPRINT" != "$EFFFINGERPRINT" ]]; then
+        echo "Your dictionary differs from the one provided by EFF. Aborting"
+        exit 1
+    fi
+    echo "Verification successful"
+    echo
+fi
 
 for i in $(seq 1 $SIZE);
 do
@@ -70,7 +88,8 @@ do
 done
 echo
 
-if [ "$ENTROPY" -eq "1" ]; then
+if [[ "$ENTROPY" -eq "1" ]]; then
+    echo
     echo "Entropy: ~$(($SIZE*323/25)) bits"
 fi
 exit 0
