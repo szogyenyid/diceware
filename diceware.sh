@@ -44,14 +44,12 @@ flags()
             export SIZE="$1"
             shift
             OPTCOUNT=$(($OPTCOUNT + 2));;
+        (-e|--entropy)
+            shift
+            export ENTROPY=1
+            OPTCOUNT=$(($OPTCOUNT + 1));;
         (-h|--help)
             help;;
-#       (-V|--version)
-#           version_info;;
-        (--)
-            shift
-            OPTCOUNT=$(($OPTCOUNT + 1))
-            break;;
         (*) usage;;
         esac
     done
@@ -71,3 +69,8 @@ do
     echo -ne $(grep ${CURRNUM} eff_large_wordlist.txt | cut -f 2) " "
 done
 echo
+
+if [ "$ENTROPY" -eq "1" ]; then
+    echo "Entropy: ~$(($SIZE*323/25)) bits"
+fi
+exit 0
