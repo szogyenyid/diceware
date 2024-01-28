@@ -5,7 +5,7 @@ blnk=$(echo "$arg0" | sed 's/./ /g')
 
 usage_info()
 {
-    echo "Usage: $arg0 [{-s|--size} size] [-e|--entropy] [-v|--verify]"
+    echo "Usage: $arg0 [{-l|--length} length] [-e|--entropy] [-v|--verify]"
     echo "       $blnk [{-d|--delimiter} delimiter]"
 }
 
@@ -13,11 +13,11 @@ help()
 {
     usage_info
     echo
-    echo "  {-s|--size} size  -- The number of words in the passphrase (default: 6)"
-    echo "  {-e|--entropy}    -- Show the entropy of the generated passphrase"
-    echo "  {-d|--delimiter}  -- Delimiter to use between words (default: space)"
-    echo "  {-v|--verify}     -- Verifies if the present wordlist is the one provided by EFF"
-    echo "  {-h|--help}       -- Print this help message and exit"
+    echo "  {-l|--length} length  -- The number of words in the passphrase (default: 6)"
+    echo "  {-e|--entropy}        -- Show the entropy of the generated passphrase"
+    echo "  {-d|--delimiter}      -- Delimiter to use between words (default: space)"
+    echo "  {-v|--verify}         -- Verifies if the present wordlist is the one provided by EFF"
+    echo "  {-h|--help}           -- Print this help message and exit"
     exit 0
 }
 
@@ -51,10 +51,10 @@ flags()
             OPTCOUNT=$(($OPTCOUNT + 1));;
         (-h|--help)
             help;;
-        (-s|--size)
+        (-l|--length)
             shift
-            [ $# = 0 ] && error "No size specified"
-            export SIZE="$1"
+            [ $# = 0 ] && error "No length specified"
+            export LENGTH="$1"
             shift
             OPTCOUNT=$(($OPTCOUNT + 2));;
         (-v|--verify)
@@ -67,7 +67,7 @@ flags()
 }
 
 BASEDIR=$(dirname "$0")
-SIZE=6
+LENGTH=6
 DELIMITER=" "
 flags "$@"
 
@@ -89,11 +89,11 @@ if [[ "$VERIFY" -eq "1" ]]; then
     echo
 fi
 
-if [[ "$SIZE" -lt 6 ]]; then
+if [[ "$LENGTH" -lt 6 ]]; then
     echo "Warning! It is advised to use at least 6 words for a passphrase."
 fi
 
-for i in $(seq 1 $SIZE);
+for i in $(seq 1 $LENGTH);
 do
     CURRNUM=""
     for j in $(seq 1 5);
@@ -102,7 +102,7 @@ do
         CURRNUM="${CURRNUM}${CURRRAND}"
     done
     WORD=$(grep ${CURRNUM} $BASEDIR/eff_large_wordlist.txt | cut -f 2)
-    if [ $i -eq $SIZE ]; then
+    if [ $i -eq $LENGTH ]; then
         echo -ne "$WORD"
     else
         echo -ne "$WORD$DELIMITER"
@@ -112,6 +112,6 @@ echo
 
 if [[ "$ENTROPY" -eq "1" ]]; then
     echo
-    echo "Entropy: ~$(($SIZE*323/25)) bits"
+    echo "Entropy: ~$(($LENGTH*323/25)) bits"
 fi
 exit 0
