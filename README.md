@@ -42,6 +42,20 @@ Otherwise, from it's directory:
 - __--verify__ (__-v__): Verifies if the present wordlist is the one provided by EFF
 - __--help__ (__-h__): Print a help message and exit
 
+### Copying to clipboard
+
+If you do not want to expose the generated passphrase, the best option is to pipe diceware into a clipboard manager. Most Linux distros have `xclip`:
+
+```
+diceware -l 10 -v -q | xclip -selection c
+```
+
+after this command, you can simply Ctrl+V the passphrase to the password field.
+
+The MacOS equivalent is
+```
+diceware -l 10 -v -q | pbcopy
+```
 
 ## License
 
